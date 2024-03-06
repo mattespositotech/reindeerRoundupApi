@@ -41,3 +41,6 @@ class MongoDataAccess:
     def delete_one(self, query):
         deleted = self.collection.delete_one(query)
         return deleted.deleted_count
+    
+    def aggregate_as_list(self, pipeline):
+        return list(self.collection.aggregate(pipeline))

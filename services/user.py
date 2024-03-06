@@ -1,5 +1,18 @@
 from dataAccess.MongoDataAccess import MongoDataAccess
 
+def add_roundup_to_user(email, roundup_id):
+    query = {
+        "email": email
+    }
+    update = {
+        "$push": {"roundups": roundup_id}
+    }
+
+    dataAccess = MongoDataAccess('user')
+    updated_rows = dataAccess.update_one(query, update)
+
+    return updated_rows
+
 def update_password_by_email(email, newPassword):
     query = {
         "email": email

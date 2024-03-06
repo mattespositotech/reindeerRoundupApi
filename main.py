@@ -1,32 +1,36 @@
 import json
 # change to as statement during clean up
-from endpoints.user import * 
+from services.user import * 
+from services.roundup import * 
 from bson import json_util
-from bson.objectid import ObjectId
-from flask import Flask, Response
-from dataAccess.MongoDataAccess import MongoDataAccess
+from utils.responses import standard_response
+from flask import Flask, Response, request
+
 
 
 app = Flask(__name__)
 
 '''
 Endpoints:
--Adding new roundup
--Deleteing roundup
 -Forgot password (trigger send email, then update password)
 -Accepting roundup invite (check if all particpants have accepted, trigger launch roundup function)
--Declining roundup invite
 -Launching roundup early
 '''
+
+@app.get('/test')
+def test():
+    print('test')
+    get_all_ready_particitpants('65e74ff2bab3a3b8e4ea819c')
+    return Response(
+        json.dumps("Test", default=json_util.default),
+        mimetype='application/json'
+    )
 
 @app.get('/user')
 def get_user(email="test@gmail.com"):
     user = get_user_by_email(email)
 
-    return Response(
-        json.dumps(user, default=json_util.default),
-        mimetype='application/json'
-    )
+    return standard_response(user)
 
 @app.post('/user/signup')
 def post_signup(email='new@gmail.com', password='passwordHash'):
@@ -78,7 +82,7 @@ def delete_user(email='new@gmail.com'):
         )
     
 @app.post('/user/updatepassword')
-def update_password(email='new@gmail.com', newPassword='passwordHash2'):
+def post_password(email='new@gmail.com', newPassword='passwordHash2'):
     updated_rows = update_password_by_email(email, newPassword)
 
     if (updated_rows > 0):
@@ -105,19 +109,58 @@ def get_roundups_by_user(email="test@gmail.com"):
         mimetype='application/json'
     )
 
-def get_all_roundups_by_user(user):
-    roundup_ids = user['roundups']
+@app.post('/roundup/add')
+def post_add_roundup(email="test@gmail.com"):
+    data = request.get_json()
 
-    obj_roundup_ids = [ObjectId(id) for id in roundup_ids]
+    updated_rows = create_roundup(email, data)
 
-    query = {
-        '_id': {'$in': obj_roundup_ids}
-    }
+    if (updated_rows > 0):
+        confirm_text = "Created a new roundup for user " + email
+        return Response(
+            json.dumps(confirm_text, default=json_util.default),
+            mimetype='application/json'
+        )
+    else:
+        return Response(
+            "Could not update password",
+            mimetype='application/json',
+            status=400
+        )
 
-    dataAccess = MongoDataAccess('roundup')
-    roundups = dataAccess.read_all(query)
-    
-    return roundups
+@app.delete('/roundup/delete')
+def delete_roundup(id='65e85fea1968931f6f6acea9'):
+    deleted_rows = delete_roundup_by_id(id)
+
+    if (deleted_rows > 0):
+        confirm_text = "Deleted roundup with id of " + id
+        return Response(
+            json.dumps(confirm_text, default=json_util.default),
+            mimetype='application/json'
+        )
+    else:
+        return Response(
+            "Could not delete roundup",
+            mimetype='application/json',
+            status=400
+        )
+
+@app.post('/roundup/participant/status')
+def post_change_participant_status(id='65e74ff2bab3a3b8e4ea819c', par_email="email1@gmail.com", status=1):
+    updated_rows = update_participants_status(id, par_email, status)
+
+    if (updated_rows > 0):
+        confirm_text = "Updated " + par_email + " in roundup " + id
+        return Response(
+            json.dumps(confirm_text, default=json_util.default),
+            mimetype='application/json'
+        )
+    else:
+        return Response(
+            "Could not update roundup",
+            mimetype='application/json',
+            status=400
+        )
 
 if __name__ == '__main__':
     app.run(debug=True)
