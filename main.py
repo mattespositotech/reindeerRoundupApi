@@ -43,20 +43,14 @@ def post_signup(email='new@gmail.com', password='passwordHash'):
             status=403
         )
     
-    return Response(
-        new_user,
-        mimetype='application/json'
-    )
+    return standard_response(new_user)
 
 @app.post('/user/login')
 def post_login(email='new@gmail.com', password='passwordHash'):
     user = login_user(email, password)
 
     if (user):
-        return Response(
-            json.dumps(user, default=json_util.default),
-            mimetype='application/json'
-        )
+        return standard_response(user)
     else:
         return Response(
             "Bad login",
@@ -70,10 +64,7 @@ def delete_user(email='new@gmail.com'):
 
     if (deleted_rows > 0):
         confirm_text = "Deleted user with email of " + email
-        return Response(
-            json.dumps(confirm_text, default=json_util.default),
-            mimetype='application/json'
-        )
+        return standard_response(confirm_text)
     else:
         return Response(
             "Could not delete user",
@@ -87,10 +78,7 @@ def post_password(email='new@gmail.com', newPassword='passwordHash2'):
 
     if (updated_rows > 0):
         confirm_text = "Updated password for user with email of " + email
-        return Response(
-            json.dumps(confirm_text, default=json_util.default),
-            mimetype='application/json'
-        )
+        return standard_response(confirm_text)
     else:
         return Response(
             "Could not update password",
@@ -104,10 +92,7 @@ def get_roundups_by_user(email="test@gmail.com"):
 
     roundups = get_all_roundups_by_user(user)
 
-    return Response(
-        json.dumps(roundups, default=json_util.default),
-        mimetype='application/json'
-    )
+    return standard_response(roundups)
 
 @app.post('/roundup/add')
 def post_add_roundup(email="test@gmail.com"):
@@ -117,10 +102,7 @@ def post_add_roundup(email="test@gmail.com"):
 
     if (updated_rows > 0):
         confirm_text = "Created a new roundup for user " + email
-        return Response(
-            json.dumps(confirm_text, default=json_util.default),
-            mimetype='application/json'
-        )
+        return standard_response(confirm_text)
     else:
         return Response(
             "Could not update password",
@@ -134,10 +116,7 @@ def delete_roundup(id='65e85fea1968931f6f6acea9'):
 
     if (deleted_rows > 0):
         confirm_text = "Deleted roundup with id of " + id
-        return Response(
-            json.dumps(confirm_text, default=json_util.default),
-            mimetype='application/json'
-        )
+        return standard_response(confirm_text)
     else:
         return Response(
             "Could not delete roundup",
@@ -151,10 +130,7 @@ def post_change_participant_status(id='65e74ff2bab3a3b8e4ea819c', par_email="ema
 
     if (updated_rows > 0):
         confirm_text = "Updated " + par_email + " in roundup " + id
-        return Response(
-            json.dumps(confirm_text, default=json_util.default),
-            mimetype='application/json'
-        )
+        standard_response(confirm_text)
     else:
         return Response(
             "Could not update roundup",
