@@ -3,10 +3,6 @@ from services.roundup import get_roundup_by_id
 from utils.exceptions import NoValidCombinationError
 from utils.constants import MATCH_MAX_ATTEMPTS
 
-'''
-Create functions for only accepted participants
-'''
-
 def launch_secret_santa(roundup_id):
     roundup = get_roundup_by_id(roundup_id)
     
@@ -18,12 +14,20 @@ def get_matches(roundup):
     participants = roundup['participants']
     blacklists = roundup['blacklist']
 
-    participants_ids = get_list_of_ids(participants)
+    participants_ids = get_list_of_ids_that_accepted(participants)
+    sanitized_blacklists = sanitize_blacklists_by_accepted(participants_ids, blacklists)
 
-    return attempt_match(participants_ids, blacklists)
+    return attempt_match(participants_ids, sanitized_blacklists)
 
 def get_list_of_ids(participants):
     return [par['id'] for par in participants]
+
+def get_list_of_ids_that_accepted(participants):
+    return [par['id'] for par in participants if par['status'] == 1]
+
+def sanitize_blacklists_by_accepted(accepted_ids, blacklists):
+    sanitized_blacklists = [[id for id in blacklist if id in accepted_ids] for blacklist in blacklists]
+    return [blacklist for blacklist in sanitized_blacklists if blacklist]
 
 # change prints to logs
 def attempt_match(id_list, blacklists):

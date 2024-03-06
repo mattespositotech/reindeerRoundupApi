@@ -3,10 +3,7 @@ import services.user as usr
 import services.roundup as rnd
 import services.secret_santa as ss
 import utils.responses as res
-from bson import json_util
-from flask import Flask, Response, request
-
-
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -21,10 +18,7 @@ Endpoints:
 def test():
     print('test')
     rnd.get_all_ready_particitpants('65e74ff2bab3a3b8e4ea819c')
-    return Response(
-        json.dumps("Test", default=json_util.default),
-        mimetype='application/json'
-    )
+    return res.text_ok_response("Test")
 
 @app.get('/user')
 def get_user():
