@@ -28,6 +28,16 @@ def create_roundup(email, data):
         return user_rows_updated
     else:
         return -1
+    
+def get_roundup_by_id(roundup_id):
+    query = {
+        '_id': ObjectId(roundup_id)
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    roundup = dataAccess.read_one(query)
+
+    return roundup
 
 def delete_roundup_by_id(roundup_id):
     query = {

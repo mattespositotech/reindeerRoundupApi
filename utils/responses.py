@@ -3,7 +3,7 @@ from bson import json_util
 from flask import Response
 
 def standard_response(data):
-    return response_wrapper(data, 500)
+    return response_wrapper(data, 200)
 
 def text_ok_response(text="There is a conflict"):
     return response_wrapper(text, 200)

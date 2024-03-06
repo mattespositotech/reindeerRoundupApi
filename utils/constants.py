@@ -1,1 +1,2 @@
 DATABASE_NAME = 'reindeer'
+MATCH_MAX_ATTEMPTS = 5

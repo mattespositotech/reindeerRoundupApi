@@ -1,6 +1,7 @@
 import json
 import services.user as usr
 import services.roundup as rnd
+import services.secret_santa as ss
 import utils.responses as res
 from bson import json_util
 from flask import Flask, Response, request
@@ -126,6 +127,13 @@ def post_change_participant_status():
         return res.text_ok_response("Updated " + data['par_email'] + " in roundup " + data['id'])
     else:
         return res.bad_request("Could not update roundup")
+
+@app.get('/roundup/santa')
+def get_roundup_matches():
+    id = request.args.get('id')
+    matches = ss.launch_secret_santa(id)
+
+    return res.standard_response(matches)
 
 if __name__ == '__main__':
     app.run(debug=True)
