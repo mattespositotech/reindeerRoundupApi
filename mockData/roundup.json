@@ -1,0 +1,53 @@
+{
+  "participants": [
+    {
+      "id": 1,
+      "name": "name1",
+      "email": "email1@gmail.com",
+      "status": 0
+    }, 
+    {
+      "id": 2,
+      "name": "name2",
+      "email": "email3@gmail.com",
+      "status": 0
+    }, 
+    {
+      "id": 3,
+      "name": "name3",
+      "email": "email3@gmail.com",
+      "status": 0
+    }, 
+    {
+      "id": 4,
+      "name": "name4",
+      "email": "email4@gmail.com",
+      "status": 0
+    }, 
+    {
+      "id": 5,
+      "name": "name5",
+      "email": "email5@gmail.com",
+      "status": 0
+    }, 
+    {
+      "id": 6,
+      "name": "name6",
+      "email": "email6@gmail.com",
+      "status": -1
+    }, 
+    {
+      "id": 7,
+      "name": "name7",
+      "email": "email7@gmail.com",
+      "status": 1
+    }],
+    "blacklist": [
+      [1, 2, 3],
+      [4, 5]
+    ],
+    "date": "12-25-2024",
+  "message": "This is a message about this mock reindeer roundup",
+  "name": "Mock Roundup",
+  "status": 0
+}
