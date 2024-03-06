@@ -3,7 +3,7 @@ import json
 from services.user import * 
 from services.roundup import * 
 from bson import json_util
-from utils.responses import standard_response
+import utils.responses as res
 from flask import Flask, Response, request
 
 
@@ -30,33 +30,25 @@ def test():
 def get_user(email="test@gmail.com"):
     user = get_user_by_email(email)
 
-    return standard_response(user)
+    return res.standard_response(user)
 
 @app.post('/user/signup')
 def post_signup(email='new@gmail.com', password='passwordHash'):
     new_user = sign_up_user(email, password)
 
     if (new_user == -1):
-        return Response(
-            "Email is already registered",
-            mimetype='application/json',
-            status=403
-        )
+        return res.conflict_response("Email is already registered")
     
-    return standard_response(new_user)
+    return res.standard_response(new_user)
 
 @app.post('/user/login')
 def post_login(email='new@gmail.com', password='passwordHash'):
     user = login_user(email, password)
 
     if (user):
-        return standard_response(user)
+        return res.standard_response(user)
     else:
-        return Response(
-            "Bad login",
-            mimetype='application/json',
-            status=403
-        )
+        return res.bad_request('Bad login')
 
 @app.delete('/user/delete')
 def delete_user(email='new@gmail.com'):
@@ -64,13 +56,9 @@ def delete_user(email='new@gmail.com'):
 
     if (deleted_rows > 0):
         confirm_text = "Deleted user with email of " + email
-        return standard_response(confirm_text)
+        return res.standard_response(confirm_text)
     else:
-        return Response(
-            "Could not delete user",
-            mimetype='application/json',
-            status=400
-        )
+        return res.bad_request("Could not delete user")
     
 @app.post('/user/updatepassword')
 def post_password(email='new@gmail.com', newPassword='passwordHash2'):
@@ -78,13 +66,9 @@ def post_password(email='new@gmail.com', newPassword='passwordHash2'):
 
     if (updated_rows > 0):
         confirm_text = "Updated password for user with email of " + email
-        return standard_response(confirm_text)
+        return res.standard_response(confirm_text)
     else:
-        return Response(
-            "Could not update password",
-            mimetype='application/json',
-            status=400
-        )
+        return res.bad_request("Could not update user password")
 
 @app.get('/roundup')
 def get_roundups_by_user(email="test@gmail.com"):
@@ -92,7 +76,7 @@ def get_roundups_by_user(email="test@gmail.com"):
 
     roundups = get_all_roundups_by_user(user)
 
-    return standard_response(roundups)
+    return res.standard_response(roundups)
 
 @app.post('/roundup/add')
 def post_add_roundup(email="test@gmail.com"):
@@ -102,13 +86,9 @@ def post_add_roundup(email="test@gmail.com"):
 
     if (updated_rows > 0):
         confirm_text = "Created a new roundup for user " + email
-        return standard_response(confirm_text)
+        return res.standard_response(confirm_text)
     else:
-        return Response(
-            "Could not update password",
-            mimetype='application/json',
-            status=400
-        )
+        return res.bad_request("Could not add new roundup")
 
 @app.delete('/roundup/delete')
 def delete_roundup(id='65e85fea1968931f6f6acea9'):
@@ -116,13 +96,9 @@ def delete_roundup(id='65e85fea1968931f6f6acea9'):
 
     if (deleted_rows > 0):
         confirm_text = "Deleted roundup with id of " + id
-        return standard_response(confirm_text)
+        return res.standard_response(confirm_text)
     else:
-        return Response(
-            "Could not delete roundup",
-            mimetype='application/json',
-            status=400
-        )
+        return res.bad_request("Could not delete roundup")
 
 @app.post('/roundup/participant/status')
 def post_change_participant_status(id='65e74ff2bab3a3b8e4ea819c', par_email="email1@gmail.com", status=1):
@@ -130,13 +106,9 @@ def post_change_participant_status(id='65e74ff2bab3a3b8e4ea819c', par_email="ema
 
     if (updated_rows > 0):
         confirm_text = "Updated " + par_email + " in roundup " + id
-        standard_response(confirm_text)
+        res.standard_response(confirm_text)
     else:
-        return Response(
-            "Could not update roundup",
-            mimetype='application/json',
-            status=400
-        )
+        return res.bad_request("Could not update roundup")
 
 if __name__ == '__main__':
     app.run(debug=True)
