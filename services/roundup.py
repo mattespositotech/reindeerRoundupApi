@@ -5,6 +5,9 @@ from services.user import add_roundup_to_user
 def get_all_roundups_by_user(user):
     roundup_ids = user['roundups']
 
+    if len(roundup_ids) == 0:
+        return None
+
     obj_roundup_ids = [ObjectId(id) for id in roundup_ids]
 
     query = {
@@ -48,7 +51,8 @@ def update_participants_status(roundup_id, par_email, status):
     dataAccess = MongoDataAccess('roundup')
     updated_rows = dataAccess.update_one(query, update)
 
-    print(check_roundup_for_launch(roundup_id))
+    # hook up to email service when implemented
+    check_roundup_for_launch(roundup_id)
 
     return updated_rows
 

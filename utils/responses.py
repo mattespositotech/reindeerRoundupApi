@@ -3,49 +3,29 @@ from bson import json_util
 from flask import Response
 
 def standard_response(data):
-    return Response(
-        json.dumps(data, default=json_util.default),
-        mimetype='application/json'
-    )
+    return response_wrapper(data, 500)
 
-def conflict_response(text="There is a conflict"):
-    return Response(
-            text,
-            mimetype='application/json',
-            status=200
-        )
+def text_ok_response(text="There is a conflict"):
+    return response_wrapper(text, 200)
 
 def bad_request(text="Bad Request"):
-    return Response(
-            text,
-            mimetype='application/json',
-            status=400
-        )
+    return response_wrapper(text, 400)
 
 def unauthorized_request(text="Unauthorized to make take action"):
-    return Response(
-            text,
-            mimetype='application/json',
-            status=401
-        )
+    return response_wrapper(text, 401)
 
 def forbidden_request(text="You don't have the right permissions for that"):
-    return Response(
-            text,
-            mimetype='application/json',
-            status=403
-        )
+    return response_wrapper(text, 403)
 
 def not_found_request(text="That item is not found"):
-    return Response(
-            text,
-            mimetype='application/json',
-            status=404
-        )
+    return response_wrapper(text, 404)
 
 def internal_server_request(text="Internal Server Error"):
+    return response_wrapper(text, 500)
+
+def response_wrapper(data, status=200):
     return Response(
-            text,
+            json.dumps(data, default=json_util.default),
             mimetype='application/json',
-            status=500
+            status=status
         )

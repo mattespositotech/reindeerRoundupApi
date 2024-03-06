@@ -1,9 +1,8 @@
 import json
-# change to as statement during clean up
 import services.user as usr
 import services.roundup as rnd
-from bson import json_util
 import utils.responses as res
+from bson import json_util
 from flask import Flask, Response, request
 
 
@@ -27,22 +26,30 @@ def test():
     )
 
 @app.get('/user')
-def get_user(email="test@gmail.com"):
+def get_user():
+    email = request.args.get('email')
     user = usr.get_user_by_email(email)
 
-    return res.standard_response(user)
+    if user:
+        return res.standard_response(user)
+    else:
+        return res.not_found_request('No user found with that email')
 
 @app.post('/user/signup')
-def post_signup(email='new@gmail.com', password='passwordHash'):
+def post_signup():
+    email = request.args.get('email')
+    password = request.args.get('password')
     new_user = usr.sign_up_user(email, password)
 
     if (new_user == -1):
-        return res.conflict_response("Email is already registered")
+        return res.text_ok_response("Email is already registered")
     
     return res.standard_response(new_user)
 
 @app.post('/user/login')
-def post_login(email='new@gmail.com', password='passwordHash'):
+def post_login():
+    email = request.args.get('email')
+    password = request.args.get('password')
     user = usr.login_user(email, password)
 
     if (user):
@@ -51,7 +58,8 @@ def post_login(email='new@gmail.com', password='passwordHash'):
         return res.bad_request('Bad login')
 
 @app.delete('/user/delete')
-def delete_user(email='new@gmail.com'):
+def delete_user():
+    email = request.args.get('email')
     deleted_rows = usr.delete_user_by_email(email)
 
     if (deleted_rows > 0):
@@ -60,7 +68,9 @@ def delete_user(email='new@gmail.com'):
         return res.bad_request("Could not delete user")
     
 @app.post('/user/updatepassword')
-def post_password(email='new@gmail.com', newPassword='passwordHash2'):
+def post_password():
+    email = request.args.get('email')
+    newPassword = request.args.get('password')
     updated_rows = usr.update_password_by_email(email, newPassword)
 
     if (updated_rows > 0):
@@ -69,15 +79,24 @@ def post_password(email='new@gmail.com', newPassword='passwordHash2'):
         return res.bad_request("Could not update user password")
 
 @app.get('/roundup')
-def get_roundups_by_user(email="test@gmail.com"):
+def get_roundups_by_user():
+    email = request.args.get('email')
     user = usr.get_user_by_email(email)
 
+    if not user:
+        return res.not_found_request('No user found with that email')
+    
     roundups = rnd.get_all_roundups_by_user(user)
 
-    return res.standard_response(roundups)
+    if roundups:
+        return res.standard_response(roundups)
+    else:
+        return res.not_found_request("No roundups for this user")
+        
 
 @app.post('/roundup/add')
-def post_add_roundup(email="test@gmail.com"):
+def post_add_roundup():
+    email = request.args.get('email')
     data = request.get_json()
 
     updated_rows = rnd.create_roundup(email, data)
@@ -88,7 +107,8 @@ def post_add_roundup(email="test@gmail.com"):
         return res.bad_request("Could not add new roundup")
 
 @app.delete('/roundup/delete')
-def delete_roundup(id='65e85fea1968931f6f6acea9'):
+def delete_roundup():
+    id = request.args.get('id')
     deleted_rows = rnd.delete_roundup_by_id(id)
 
     if (deleted_rows > 0):
@@ -97,11 +117,13 @@ def delete_roundup(id='65e85fea1968931f6f6acea9'):
         return res.bad_request("Could not delete roundup")
 
 @app.post('/roundup/participant/status')
-def post_change_participant_status(id='65e74ff2bab3a3b8e4ea819c', par_email="email1@gmail.com", status=1):
-    updated_rows = rnd.update_participants_status(id, par_email, status)
+def post_change_participant_status():
+    data = request.get_json()
+
+    updated_rows = rnd.update_participants_status(data['id'], data['par_email'], data['status'])
 
     if (updated_rows > 0):
-        res.standard_response("Updated " + par_email + " in roundup " + id)
+        return res.text_ok_response("Updated " + data['par_email'] + " in roundup " + data['id'])
     else:
         return res.bad_request("Could not update roundup")
 
