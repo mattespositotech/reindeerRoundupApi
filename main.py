@@ -75,7 +75,7 @@ def post_password():
     else:
         return res.bad_request("Could not update user password")
 
-@app.get('/roundup')
+@app.get('/user/roundups')
 def get_roundups_by_user():
     email = request.args.get('email')
     user = usr.get_user_by_email(email)
@@ -89,7 +89,17 @@ def get_roundups_by_user():
         return res.standard_response(roundups)
     else:
         return res.not_found_request("No roundups for this user")
-        
+
+@app.get('/roundup')
+def get_roundup_by_id():
+    id = request.args.get('id')
+
+    roundup = rnd.get_roundup_by_id(id)
+
+    if roundup:
+        return res.standard_response(roundup)
+    else:
+        return res.not_found_request("Invalid roundup id")
 
 @app.post('/roundup/add')
 def post_add_roundup():
