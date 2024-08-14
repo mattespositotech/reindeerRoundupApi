@@ -4,8 +4,10 @@ import services.roundup as rnd
 import services.secret_santa as ss
 import utils.responses as res
 from flask import Flask, request
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, origins=["http://localhost:3000"])
 
 '''
 Endpoints:
@@ -17,7 +19,7 @@ Endpoints:
 @app.get('/test')
 def test():
     print('test')
-    rnd.get_all_ready_particitpants('65e74ff2bab3a3b8e4ea819c')
+    #rnd.get_all_ready_particitpants('65e8619212f7832259f1da50')
     return res.text_ok_response("Test")
 
 @app.get('/user')
@@ -130,4 +132,4 @@ def get_roundup_matches():
     return res.standard_response(matches)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=10000)

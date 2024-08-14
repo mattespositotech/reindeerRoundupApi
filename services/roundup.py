@@ -14,8 +14,15 @@ def get_all_roundups_by_user(user):
         '_id': {'$in': obj_roundup_ids}
     }
 
+    projection = {
+        'name': 1,
+        'date': 1,
+        'status': 1,
+        '_id': 1
+    }
+
     dataAccess = MongoDataAccess('roundup')
-    roundups = dataAccess.read_all(query)
+    roundups = dataAccess.read_all(query, projection=projection)
     
     return roundups
 

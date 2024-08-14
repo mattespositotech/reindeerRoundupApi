@@ -35,9 +35,12 @@ class MongoDataAccess:
             print("An error occurred while reading one document:", e)
             return None
     
-    def read_all(self, query):
+    def read_all(self, query, projection=None):
         try:
-            documents = self.collection.find(query)
+            if projection is None:
+                documents = self.collection.find(query)
+            else: 
+                documents = self.collection.find(query, projection)
             return [{**doc, '_id': str(doc['_id'])} for doc in documents]
         except Exception as e:
             print("An error occurred while reading all documents:", e)
