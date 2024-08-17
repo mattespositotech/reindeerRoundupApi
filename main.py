@@ -2,6 +2,7 @@ import json
 import services.user as usr
 import services.roundup as rnd
 import services.secret_santa as ss
+import services.transformer as tfm
 import utils.responses as res
 from flask import Flask, request
 from flask_cors import CORS
@@ -106,7 +107,9 @@ def post_add_roundup():
     email = request.args.get('email')
     data = request.get_json()
 
-    updated_rows = rnd.create_roundup(email, data)
+    roundup = tfm.prep_roundup_for_mongo(data)
+
+    updated_rows = rnd.create_roundup(email, roundup)
 
     if (updated_rows > 0):
         return res.standard_response("Created a new roundup for user " + email)
