@@ -9,7 +9,9 @@ def prep_roundup_for_mongo(roundup):
     for participant in roundup['participants']:
         participant['status'] = UserStatus.Pending.value
 
-    roundup['blacklist'] = remove_duplicates(roundup['blacklist'])
+    print(roundup)
+
+    roundup['blacklists'] = remove_duplicates(roundup['blacklists'])
 
     return roundup
 
