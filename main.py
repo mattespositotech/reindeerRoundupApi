@@ -1,8 +1,8 @@
-import json
 import services.user as usr
 import services.roundup as rnd
 import services.secret_santa as ss
 import services.transformer as tfm
+import services.email as eml
 import utils.responses as res
 from flask import Flask, request
 from flask_cors import CORS
@@ -19,9 +19,10 @@ Endpoints:
 
 @app.get('/test')
 def test():
-    print('test')
+    #print('test')
     #rnd.get_all_ready_particitpants('65e8619212f7832259f1da50')
-    return res.text_ok_response("Test")
+    eml.test_email()
+    return res.text_ok_response("Email Sent")
 
 @app.get('/user')
 def get_user():
