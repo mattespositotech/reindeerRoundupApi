@@ -22,7 +22,7 @@ def test():
     #print('test')
     #rnd.get_all_ready_particitpants('65e8619212f7832259f1da50')
     #eml.test_email()
-    return res.text_ok_response("Email Sent")
+    return res.text_ok_response(hash)
 
 @app.get('/user')
 def get_user():

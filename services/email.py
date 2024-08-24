@@ -30,7 +30,7 @@ def send_email(subject, body, recipient):
     print("Message sent!")
 
 def send_invites(roundup):
-    subject = "You've Been Invited To A Reindeer Roundup! 7"
+    subject = "You've Been Invited To A Reindeer Roundup!"
     roundupEmailInfo = {
         'id': roundup['_id'],
         'title': roundup['name'],
@@ -40,7 +40,7 @@ def send_invites(roundup):
 
     for part in roundup['participants']:
         if '@test.com' not in part['email']:
-            body = hb.invitation_builder(roundupEmailInfo, part['email'])
+            body = hb.invitation_builder(roundupEmailInfo, part['uuid'])
             send_email(subject, body, part['email'])
         else:
             print('skip')

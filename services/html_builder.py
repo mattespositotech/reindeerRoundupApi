@@ -23,7 +23,7 @@ def update_links(soup, links):
         if element:
             element['href'] += link
 
-def invitation_builder(roundup, email):
+def invitation_builder(roundup, uuid):
     soup = load_template('invitation_template.html')
 
     roundup_data = {
@@ -34,8 +34,8 @@ def invitation_builder(roundup, email):
     update_template(soup, roundup_data)
 
     participant_buttons = {
-        'accept': f"/{roundup['id']}/{email}",
-        'decline': f"/{roundup['id']}/{email}"
+        'accept': f"/{roundup['id']}/{uuid}",
+        'decline': f"/{roundup['id']}/{uuid}"
     }
     update_links(soup, participant_buttons)
 
