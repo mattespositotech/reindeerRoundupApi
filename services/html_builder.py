@@ -1,24 +1,35 @@
 import os
 from bs4 import BeautifulSoup
 
-def invitation_builder():
+def invitation_builder(roundup, email):
+    roundupId = roundup['id']
+
     template_path = os.path.join(os.path.dirname(__file__), '../templates/invitation_template.html')
     with open(template_path, 'r') as file:
         template = file.read()
 
     soup = BeautifulSoup(template, 'html.parser')
 
-    data = {
-        'name': 'Matt',
-        'title': 'Christmas 2024',
-        'date': '12-25-2024',
-        'message': 'Please join us in our annual secret santa gift swap. This year will be different since no one will have to trade names!'
+    roundupData = {
+        'title': roundup['title'],
+        'date': roundup['date'],
+        'message': roundup['message']
     }
 
-    for id, new_text in data.items():
+    for id, new_text in roundupData.items():
         element = soup.find(id=id)
         if element:
             element.string = new_text
+
+    participantButtons = {
+        'accept': f"/{roundupId}/{email}",
+        'decline': f"/{roundupId}/{email}"
+    }
+
+    for id, link in participantButtons.items():
+        element = soup.find(id=id)
+        if element:
+            element['href'] += link
     
     return str(soup)
 

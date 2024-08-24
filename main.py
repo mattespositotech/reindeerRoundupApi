@@ -21,7 +21,7 @@ Endpoints:
 def test():
     #print('test')
     #rnd.get_all_ready_particitpants('65e8619212f7832259f1da50')
-    eml.test_email()
+    #eml.test_email()
     return res.text_ok_response("Email Sent")
 
 @app.get('/user')
@@ -126,6 +126,18 @@ def delete_roundup():
         return res.standard_response("Deleted roundup with id of " + id)
     else:
         return res.bad_request("Could not delete roundup")
+    
+@app.post('/roundup/participants/sendinvites')
+def send_email_invites():
+    id = request.args.get('id')
+
+    roundup = rnd.get_roundup_by_id(id)
+
+    if not roundup:
+        return res.not_found_request("Invalid roundup id")
+
+    eml.send_invites(roundup)
+    return res.standard_response("Invites sent")
 
 @app.post('/roundup/participant/status')
 def post_change_participant_status():
