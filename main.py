@@ -139,16 +139,29 @@ def send_email_invites():
     eml.send_invites(roundup)
     return res.standard_response("Invites sent")
 
-@app.post('/roundup/participant/status')
-def post_change_participant_status():
+@app.post('/roundup/participant/accept')
+def accept_invite():
     data = request.get_json()
 
-    updated_rows = rnd.update_participants_status(data['id'], data['par_email'], data['status'])
+    updated_rows = rnd.update_participant_to_accepted(data['id'], data['uuid'])
 
     if (updated_rows > 0):
-        return res.text_ok_response("Updated " + data['par_email'] + " in roundup " + data['id'])
+        roundup = rnd.get_roundup_by_id(data['id'])
+        return res.standard_response(roundup['name'])
     else:
-        return res.bad_request("Could not update roundup")
+        return res.bad_request('Could not update participant')
+    
+@app.post('/roundup/participant/decline')
+def decline_invite():
+    data = request.get_json()
+
+    updated_rows = rnd.update_participant_to_declined(data['id'], data['uuid'])
+
+    if (updated_rows > 0):
+        roundup = rnd.get_roundup_by_id(data['id'])
+        return res.standard_response(roundup['name'])
+    else:
+        return res.bad_request('Could not update participant')
 
 @app.get('/roundup/santa')
 def get_roundup_matches():

@@ -1,5 +1,6 @@
 from bson.objectid import ObjectId
 from dataAccess.MongoDataAccess import MongoDataAccess
+from enums.user_enums import UserStatus
 from services.user import add_roundup_to_user
 
 def get_all_roundups_by_user(user):
@@ -56,13 +57,19 @@ def delete_roundup_by_id(roundup_id):
 
     return deleted_rows
 
-def update_participants_status(roundup_id, par_email, status):
+def update_participant_to_accepted(roundup_id, uuid):
+    return update_participants_status(roundup_id, uuid, UserStatus.Accepted)
+
+def update_participant_to_declined(roundup_id, uuid):
+    return update_participants_status(roundup_id, uuid, UserStatus.Declined)
+
+def update_participants_status(roundup_id, uuid, status):
     query = {
         "_id": ObjectId(roundup_id),
-        "participants.email": par_email
+        "participants.uuid": uuid
     }
     update = {
-        "$set": {"participants.$.status": status}
+        "$set": {"participants.$.status": status.value}
     }
 
     dataAccess = MongoDataAccess('roundup')
