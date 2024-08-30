@@ -61,6 +61,14 @@ class MongoDataAccess:
         except Exception as e:
             print("An error occurred while updating one document:", e)
             return 0
+        
+    def update_many(self, query, update):
+        try:
+            updated = self.collection.update_many(query, update)
+            return updated.modified_count
+        except Exception as e:
+            print("An error occurred while updating documents:", e)
+            return 0
     
     def delete_one(self, query):
         try:

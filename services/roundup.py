@@ -15,6 +15,7 @@ def get_all_roundups_by_user(user):
         '_id': {'$in': obj_roundup_ids}
     }
 
+    # 1 means to include the field
     projection = {
         'name': 1,
         'date': 1,
@@ -111,3 +112,17 @@ def get_all_ready_particitpants(roundup_id):
     participants = [participant for doc in result for participant in doc.get("participants", [])]
 
     return participants
+
+def set_all_participants_to_accepted(roundup_id):
+    print(roundup_id)
+    query = {
+        "_id": ObjectId(roundup_id)
+    }
+    update = {
+        "$set": {"participants.$[].status": UserStatus.Accepted.value}
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_many(query, update)
+
+    return updated_rows

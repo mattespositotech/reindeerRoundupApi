@@ -139,6 +139,18 @@ def send_email_invites():
     eml.send_invites(roundup)
     return res.standard_response("Invites sent")
 
+@app.post('/roundup/participants/allToAccepted')
+def set_all_to_accepted():
+    data = request.get_json()
+
+    updated_rows = rnd.set_all_participants_to_accepted(data['id'])
+
+    if (updated_rows > 0):
+        return res.standard_response('Updated all participants')
+    else:
+        return res.bad_request('Could not update participants')
+
+
 @app.post('/roundup/participant/accept')
 def accept_invite():
     data = request.get_json()
@@ -167,6 +179,8 @@ def decline_invite():
 def get_roundup_matches():
     id = request.args.get('id')
     matches = ss.launch_secret_santa(id)
+
+    print(matches)
 
     return res.standard_response(matches)
 
