@@ -113,7 +113,7 @@ def post_add_roundup():
 
     updated_rows, roundup_id = rnd.create_roundup(email, roundup)
 
-    if (updated_rows > 0):
+    if updated_rows > 0:
         roundup = rnd.get_roundup_by_id(roundup_id)
         eml.send_invites(roundup)
         return res.standard_response("Created a new roundup for user " + email)
@@ -161,7 +161,13 @@ def accept_invite():
     updated_rows, launchRoundup = rnd.update_participant_to_accepted(data['id'], data['uuid'])
 
     if launchRoundup:
-        print('launch')
+        roundup = rnd.get_roundup_by_id(data['id'])
+        try: 
+            matches = ss.get_matches(roundup)
+        except NoValidCombinationError:
+            res.bad_request('No valid matches found')
+    # add error handling
+        rnd.save_matches_to_roundup(data['id'], matches)
 
     if (updated_rows > 0):
         roundup = rnd.get_roundup_by_id(data['id'])
@@ -174,6 +180,15 @@ def decline_invite():
     data = request.get_json()
 
     updated_rows, launchRoundup = rnd.update_participant_to_declined(data['id'], data['uuid'])
+
+    if launchRoundup:
+        roundup = rnd.get_roundup_by_id(data['id'])
+        try: 
+            matches = ss.get_matches(roundup)
+        except NoValidCombinationError:
+            res.bad_request('No valid matches found')
+
+        rnd.save_matches_to_roundup(data['id'], matches)
 
     if (updated_rows > 0):
         roundup = rnd.get_roundup_by_id(data['id'])

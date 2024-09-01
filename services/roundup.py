@@ -77,7 +77,6 @@ def update_participants_status(roundup_id, uuid, status):
     dataAccess = MongoDataAccess('roundup')
     updated_rows = dataAccess.update_one(query, update)
 
-    # hook up to email service when implemented
     launchRoundup = check_roundup_for_launch(roundup_id)
 
     return updated_rows, launchRoundup
