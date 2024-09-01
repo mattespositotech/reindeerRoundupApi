@@ -1,5 +1,6 @@
 from bson.objectid import ObjectId
 from dataAccess.MongoDataAccess import MongoDataAccess
+from enums.roundup_enums import RoundupStatus
 from enums.user_enums import UserStatus
 from services.user import add_roundup_to_user
 
@@ -114,7 +115,6 @@ def get_all_ready_particitpants(roundup_id):
     return participants
 
 def set_all_participants_to_accepted(roundup_id):
-    print(roundup_id)
     query = {
         "_id": ObjectId(roundup_id)
     }
@@ -124,5 +124,21 @@ def set_all_participants_to_accepted(roundup_id):
 
     dataAccess = MongoDataAccess('roundup')
     updated_rows = dataAccess.update_many(query, update)
+
+    return updated_rows
+
+def save_matches_to_roundup(roundup_id, matches):
+    query = {
+        "_id": ObjectId(roundup_id)
+    }
+    update = {
+        "$set": {
+            "matches": matches,
+            "status": RoundupStatus.Complete.value
+        }
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_one(query, update)
 
     return updated_rows

@@ -3,6 +3,7 @@ import services.roundup as rnd
 import services.secret_santa as ss
 import services.transformer as tfm
 import services.email as eml
+from utils.exceptions import NoValidCombinationError
 import utils.responses as res
 from flask import Flask, request
 from flask_cors import CORS
@@ -175,14 +176,24 @@ def decline_invite():
     else:
         return res.bad_request('Could not update participant')
 
-@app.get('/roundup/santa')
+@app.post('/roundup/launch')
 def get_roundup_matches():
-    id = request.args.get('id')
-    matches = ss.launch_secret_santa(id)
+    data = request.get_json()
 
-    print(matches)
+    roundup = rnd.get_roundup_by_id(data['id'])
 
-    return res.standard_response(matches)
+    try: 
+        matches = ss.get_matches(roundup)
+    except NoValidCombinationError:
+        res.bad_request('No valid matches found')
+
+    update_rows = rnd.save_matches_to_roundup(data['id'], matches)
+
+    if update_rows > 0:
+        return res.standard_response(matches)
+    else:
+
+        return res.bad_request('Unable to save matches to roundup')
 
 if __name__ == '__main__':
     app.run(debug=True, port=10000)
