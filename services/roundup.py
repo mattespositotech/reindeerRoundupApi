@@ -35,9 +35,9 @@ def create_roundup(email, data):
 
     if (roundup_id):
         user_rows_updated = add_roundup_to_user(email, roundup_id)
-        return user_rows_updated
+        return user_rows_updated, roundup_id
     else:
-        return -1
+        return -1, -1
     
 def get_roundup_by_id(roundup_id):
     query = {
@@ -78,9 +78,9 @@ def update_participants_status(roundup_id, uuid, status):
     updated_rows = dataAccess.update_one(query, update)
 
     # hook up to email service when implemented
-    check_roundup_for_launch(roundup_id)
+    launchRoundup = check_roundup_for_launch(roundup_id)
 
-    return updated_rows
+    return updated_rows, launchRoundup
 
 def check_roundup_for_launch(roundup_id):
     pipeline = [

@@ -111,9 +111,11 @@ def post_add_roundup():
 
     roundup = tfm.prep_roundup_for_mongo(data)
 
-    updated_rows = rnd.create_roundup(email, roundup)
+    updated_rows, roundup_id = rnd.create_roundup(email, roundup)
 
     if (updated_rows > 0):
+        roundup = rnd.get_roundup_by_id(roundup_id)
+        eml.send_invites(roundup)
         return res.standard_response("Created a new roundup for user " + email)
     else:
         return res.bad_request("Could not add new roundup")
@@ -156,7 +158,10 @@ def set_all_to_accepted():
 def accept_invite():
     data = request.get_json()
 
-    updated_rows = rnd.update_participant_to_accepted(data['id'], data['uuid'])
+    updated_rows, launchRoundup = rnd.update_participant_to_accepted(data['id'], data['uuid'])
+
+    if launchRoundup:
+        print('launch')
 
     if (updated_rows > 0):
         roundup = rnd.get_roundup_by_id(data['id'])
@@ -168,7 +173,7 @@ def accept_invite():
 def decline_invite():
     data = request.get_json()
 
-    updated_rows = rnd.update_participant_to_declined(data['id'], data['uuid'])
+    updated_rows, launchRoundup = rnd.update_participant_to_declined(data['id'], data['uuid'])
 
     if (updated_rows > 0):
         roundup = rnd.get_roundup_by_id(data['id'])
