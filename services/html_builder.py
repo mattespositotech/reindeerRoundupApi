@@ -41,14 +41,14 @@ def invitation_builder(roundup, uuid):
 
     return str(soup)
 
-def receiver_builder():
-    soup = load_template('receiver_template.html')
+def receiver_builder(roundup, match):
+    soup = load_template('reciever_template.html')
 
     receiver_data = {
-        'user-name': 'Billy',
-        'org-name': 'Matt',
-        'date': '12-25-2024',
-        'receiver-name': 'Jack'
+        'user-name': match['giver'],
+        'org-name': roundup['title'],
+        'date': roundup['date'],
+        'receiver-name': match['reciever']
     }
     update_template(soup, receiver_data)
 

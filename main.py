@@ -210,6 +210,8 @@ def get_roundup_matches():
     update_rows = rnd.save_matches_to_roundup(data['id'], matches)
 
     if update_rows > 0:
+        roundup = rnd.get_roundup_by_id(data['id'])
+        eml.send_recievers(roundup)
         return res.standard_response(matches)
     else:
 

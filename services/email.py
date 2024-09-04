@@ -44,3 +44,26 @@ def send_invites(roundup):
             send_email(subject, body, part['email'])
         else:
             print('skip')
+
+def send_recievers(roundup):
+    subject = "Reindeer Roundup: Discover Your Secret Santa"
+    roundupEmailInfo = {
+        'title': roundup['name'],
+        'date': roundup['date'],
+    }
+
+    name_to_email = {participant['name']: participant['email'] for participant in roundup['participants']}
+
+    for giver, reciever in roundup['matches'].items():
+        matchInfo = {
+            'giver': giver,
+            'reciever': reciever
+        }
+
+        if '@test.com' not in name_to_email[giver]:
+            body = hb.receiver_builder(roundupEmailInfo, matchInfo)
+            send_email(subject, body, name_to_email[giver])
+        else:
+            print('skip')
+
+

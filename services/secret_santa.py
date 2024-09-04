@@ -1,5 +1,4 @@
 import random
-from services.roundup import get_roundup_by_id
 from utils.exceptions import NoValidCombinationError
 from utils.constants import MATCH_MAX_ATTEMPTS
 
@@ -13,7 +12,7 @@ def get_matches(roundup):
     return attempt_match(participants_ids, sanitized_blacklists)
 
 def get_list_of_ids_that_accepted(participants):
-    return [par['email'] for par in participants if par['status'] == 1]
+    return [par['name'] for par in participants if par['status'] == 1]
 
 def sanitize_blacklists_by_accepted(accepted_ids, blacklists):
     sanitized_blacklists = [[id for id in blacklist if id in accepted_ids] for blacklist in blacklists]
