@@ -46,7 +46,7 @@ def send_invites(roundup):
             print('skip')
 
 def send_recievers(roundup):
-    subject = "Reindeer Roundup: Discover Your Secret Santa"
+    subject = "Discover Your Secret Santa"
     roundupEmailInfo = {
         'title': roundup['name'],
         'date': roundup['date'],
