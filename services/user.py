@@ -18,8 +18,13 @@ def add_roundup_to_user(email, roundup_id):
 def update_password_by_email(id, newPassword):
     password = hash_password(newPassword)
 
+    try:
+        obj_id = ObjectId(id)
+    except Exception:
+        return 0
+
     query = {
-        "_id": ObjectId(id)
+        "_id": obj_id
     }
     update = {
         "$set": {"password": password}
