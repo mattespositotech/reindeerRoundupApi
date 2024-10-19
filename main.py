@@ -65,15 +65,29 @@ def delete_user():
         return res.standard_response("Deleted user with email of " + email)
     else:
         return res.bad_request("Could not delete user")
+
+@app.post('/user/resetpassword')
+def post_reset_password():
+    email = request.args.get('email')
+
+    user = usr.get_user_by_email(email)
+
+    if (user == None):
+        return res.bad_request('No user with that email')
+
+    eml.reset_password(user)
+    return res.standard_response('Email sent')
     
 @app.post('/user/updatepassword')
 def post_password():
-    email = request.args.get('email')
-    newPassword = request.args.get('password')
-    updated_rows = usr.update_password_by_email(email, newPassword)
+    data = request.get_json()
+    id = data.get('id')
+    password = data.get('password')
+
+    updated_rows = usr.update_password_by_email(id, password)
 
     if (updated_rows > 0):
-        return res.standard_response("Updated password for user with email of " + email)
+        return res.standard_response("Updated password for user")
     else:
         return res.bad_request("Could not update user password")
 

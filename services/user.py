@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from dataAccess.MongoDataAccess import MongoDataAccess
 from services.encryption import check_password, hash_password
 
@@ -14,11 +15,11 @@ def add_roundup_to_user(email, roundup_id):
 
     return updated_rows
 
-def update_password_by_email(email, newPassword):
+def update_password_by_email(id, newPassword):
     password = hash_password(newPassword)
 
     query = {
-        "email": email
+        "_id": ObjectId(id)
     }
     update = {
         "$set": {"password": password}

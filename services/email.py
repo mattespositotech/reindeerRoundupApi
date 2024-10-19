@@ -27,7 +27,13 @@ def send_email(subject, body, recipient):
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
        smtp_server.login(sender, password)
        smtp_server.sendmail(sender, recipient, msg.as_string())
-    print("Message sent!")
+
+def reset_password(user):
+    subject = "Reset Your Reindeer Roundup Password"
+    
+    body = hb.reset_password_builder(user)
+
+    send_email(subject, body, user['email'])
 
 def send_invites(roundup):
     subject = "You've Been Invited To A Reindeer Roundup!"

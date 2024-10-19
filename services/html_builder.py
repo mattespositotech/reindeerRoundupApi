@@ -23,6 +23,19 @@ def update_links(soup, links):
         if element:
             element['href'] += link
 
+def reset_password_builder(user):
+    soup = load_template('reset_password_template.html')
+
+    user_data = {
+        'password': f"/{user['_id']}"
+    }
+
+    print(user_data)
+
+    update_links(soup, user_data)
+
+    return soup
+
 def invitation_builder(roundup, uuid):
     soup = load_template('invitation_template.html')
 
