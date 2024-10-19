@@ -1,3 +1,4 @@
+from flask_jwt_extended import JWTManager, create_access_token
 import services.user as usr
 import services.roundup as rnd
 import services.secret_santa as ss
@@ -9,21 +10,13 @@ from flask import Flask, request
 from flask_cors import CORS
 
 app = Flask(__name__)
+app.config['JWT_SECRET_KEY'] = 'very-secret-key'
+jwt = JWTManager(app)
 CORS(app, origins=["http://localhost:3000"])
-
-'''
-Endpoints:
--Forgot password (trigger send email, then update password)
--Accepting roundup invite (check if all particpants have accepted, trigger launch roundup function)
--Launching roundup early
-'''
 
 @app.get('/test')
 def test():
-    #print('test')
-    #rnd.get_all_ready_particitpants('65e8619212f7832259f1da50')
-    #eml.test_email()
-    return res.text_ok_response(hash)
+    return res.text_ok_response('')
 
 @app.get('/user')
 def get_user():
@@ -49,7 +42,7 @@ def post_signup():
 @app.post('/user/login')
 def post_login():
     email = request.args.get('email')
-    password = request.args.get('password')
+    password = str(request.args.get('password'))
     user = usr.login_user(email, password)
 
     if (user):

@@ -1,4 +1,5 @@
 from dataAccess.MongoDataAccess import MongoDataAccess
+from services.encryption import check_password, hash_password
 
 def add_roundup_to_user(email, roundup_id):
     query = {
@@ -14,11 +15,13 @@ def add_roundup_to_user(email, roundup_id):
     return updated_rows
 
 def update_password_by_email(email, newPassword):
+    password = hash_password(newPassword)
+
     query = {
         "email": email
     }
     update = {
-        "$set": {"password": newPassword}
+        "$set": {"password": password}
     }
 
     dataAccess = MongoDataAccess('user')
@@ -38,15 +41,15 @@ def delete_user_by_email(email):
     return deleted_rows
 
 def login_user(email, password):
-    query = {
-        "email": email,
-        "password": password
-    }
+    user = get_user_by_email(email)
 
-    dataAccess = MongoDataAccess('user')
-    user = dataAccess.read_one(query)
+    if (user is None): 
+        return -1
 
-    return user
+    if check_password(password, user['password']):
+        return user
+    else:
+        return -1
 
 def sign_up_user(email, password):
     existing_user = get_user_by_email(email)
@@ -54,9 +57,11 @@ def sign_up_user(email, password):
     if (existing_user): 
         return -1
 
+    password_hash = hash_password(password)
+
     new_user = {
         "email": email,
-        "password": password,
+        "password": password_hash,
         "roundups": []
     }
 
