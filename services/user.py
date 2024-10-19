@@ -43,7 +43,7 @@ def delete_user_by_email(email):
 def login_user(email, password):
     user = get_user_by_email(email)
 
-    if (user is None): 
+    if (user == None):
         return -1
 
     if check_password(password, user['password']):

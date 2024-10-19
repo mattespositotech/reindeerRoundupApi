@@ -30,26 +30,31 @@ def get_user():
 
 @app.post('/user/signup')
 def post_signup():
-    email = request.args.get('email')
-    password = request.args.get('password')
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
     new_user = usr.sign_up_user(email, password)
 
     if (new_user == -1):
-        return res.text_ok_response("Email is already registered")
+        return res.bad_request("Email is already registered")
     
-    return res.standard_response(new_user)
+    access_token = create_access_token(identity=email)
+    return res.standard_response({"email": new_user['email'], "access_token": access_token})
 
 @app.post('/user/login')
 def post_login():
-    email = request.args.get('email')
-    password = str(request.args.get('password'))
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
     user = usr.login_user(email, password)
 
     if user == -1:
         return res.bad_request('Bad login')
     
     access_token = create_access_token(identity=email)
-    return res.standard_response({"user": user, "access_token": access_token})
+    return res.standard_response({"email": user['email'], "access_token": access_token})
 
 @app.delete('/user/delete')
 def delete_user():
