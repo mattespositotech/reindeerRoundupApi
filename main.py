@@ -45,10 +45,11 @@ def post_login():
     password = str(request.args.get('password'))
     user = usr.login_user(email, password)
 
-    if (user):
-        return res.standard_response(user)
-    else:
+    if user == -1:
         return res.bad_request('Bad login')
+    
+    access_token = create_access_token(identity=email)
+    return res.standard_response({"user": user, "access_token": access_token})
 
 @app.delete('/user/delete')
 def delete_user():
