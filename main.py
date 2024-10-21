@@ -1,4 +1,4 @@
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 import services.user as usr
 import services.roundup as rnd
 import services.secret_santa as ss
@@ -92,6 +92,7 @@ def post_password():
         return res.bad_request("Could not update user password")
 
 @app.get('/user/roundups')
+@jwt_required()
 def get_roundups_by_user():
     email = request.args.get('email')
     user = usr.get_user_by_email(email)
@@ -107,6 +108,7 @@ def get_roundups_by_user():
         return res.not_found_request("No roundups for this user")
 
 @app.get('/roundup')
+@jwt_required()
 def get_roundup_by_id():
     id = request.args.get('id')
 
@@ -118,6 +120,7 @@ def get_roundup_by_id():
         return res.not_found_request("Invalid roundup id")
 
 @app.post('/roundup/add')
+@jwt_required()
 def post_add_roundup():
     email = request.args.get('email')
     data = request.get_json()
@@ -134,6 +137,7 @@ def post_add_roundup():
         return res.bad_request("Could not add new roundup")
 
 @app.delete('/roundup/delete')
+@jwt_required()
 def delete_roundup():
     id = request.args.get('id')
     deleted_rows = rnd.delete_roundup_by_id(id)
@@ -144,6 +148,7 @@ def delete_roundup():
         return res.bad_request("Could not delete roundup")
     
 @app.post('/roundup/participants/sendinvites')
+@jwt_required()
 def send_email_invites():
     id = request.args.get('id')
 
@@ -156,6 +161,7 @@ def send_email_invites():
     return res.standard_response("Invites sent")
 
 @app.post('/roundup/participants/allToAccepted')
+@jwt_required()
 def set_all_to_accepted():
     data = request.get_json()
 
@@ -210,6 +216,7 @@ def decline_invite():
         return res.bad_request('Could not update participant')
 
 @app.post('/roundup/launch')
+@jwt_required()
 def get_roundup_matches():
     data = request.get_json()
 
