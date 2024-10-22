@@ -16,7 +16,7 @@ CORS(app, origins=["http://localhost:3000"])
 
 @app.get('/test')
 def test():
-    return res.text_ok_response('')
+    return res.text_ok_response('test')
 
 @app.get('/user')
 def get_user():
