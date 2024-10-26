@@ -12,7 +12,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'very-secret-key'
 jwt = JWTManager(app)
-CORS(app, origins=["http://localhost:3000"])
+CORS(app, origins=["http://localhost:3000", "https://wonderful-tree-00f3c6710.5.azurestaticapps.net/"])
 
 @app.get('/test')
 def test():
@@ -104,8 +104,6 @@ def get_roundups_by_user():
 
     if roundups:
         return res.standard_response(roundups)
-    else:
-        return res.not_found_request("No roundups for this user")
 
 @app.get('/roundup')
 @jwt_required()
