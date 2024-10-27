@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 import services.user as usr
 import services.roundup as rnd
@@ -10,7 +12,8 @@ from flask import Flask, request
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'very-secret-key'
+load_dotenv()
+app.config['JWT_SECRET_KEY'] = os.environ['JWT_KEY']
 jwt = JWTManager(app)
 CORS(app, origins=["http://localhost:3000", "https://wonderful-tree-00f3c6710.5.azurestaticapps.net"])
 
@@ -104,6 +107,8 @@ def get_roundups_by_user():
 
     if roundups:
         return res.standard_response(roundups)
+    else:
+        return res.standard_response([])
 
 @app.get('/roundup')
 @jwt_required()
