@@ -15,7 +15,7 @@ app = Flask(__name__)
 load_dotenv()
 app.config['JWT_SECRET_KEY'] = os.environ['JWT_KEY']
 jwt = JWTManager(app)
-CORS(app, origins=["http://localhost:3000", "https://wonderful-tree-00f3c6710.5.azurestaticapps.net"])
+CORS(app, origins=["http://localhost:3000", "https://wonderful-tree-00f3c6710.5.azurestaticapps.net", "reindeer-roundup.com"])
 
 @app.get('/test')
 def test():
