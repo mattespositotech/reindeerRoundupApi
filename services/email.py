@@ -75,5 +75,5 @@ def send_recievers(roundup):
 
 def no_matches(roundup):
     subject = f"No Matches Found For: {roundup['name']}"
-    body = "Theres a problem with your roundup. We couldn't find a matching set. Please log back in and adjust the participants and backlists."
+    body = "Theres a problem with your roundup. We couldn't find a matching set. Please log back in to adjust the participants and backlists."
     send_email(subject, body, roundup['organizer'], logo=False)

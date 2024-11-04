@@ -230,7 +230,7 @@ def roundup_launch(id):
     except NoValidCombinationError:
         rnd.set_status_to_bad_matches(id)
         eml.no_matches(roundup)
-        return -1
+        return -1, {}
     
     updated_rows = rnd.save_matches_to_roundup(id, matches)
 
