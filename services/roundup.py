@@ -31,6 +31,8 @@ def get_all_roundups_by_user(user):
 
 def create_roundup(email, data):
     dataAccess = MongoDataAccess('roundup')
+
+    data['organizer'] = email
     roundup_id = dataAccess.insert_one(data)
 
     if (roundup_id):
@@ -123,6 +125,21 @@ def set_all_participants_to_accepted(roundup_id):
 
     dataAccess = MongoDataAccess('roundup')
     updated_rows = dataAccess.update_many(query, update)
+
+    return updated_rows
+
+def set_status_to_bad_matches(roundup_id):
+    query = {
+        "_id": ObjectId(roundup_id)
+    }
+    update = {
+        "$set": {
+            "status": RoundupStatus.BadMatches.value
+        }
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_one(query, update)
 
     return updated_rows
 

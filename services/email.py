@@ -5,7 +5,7 @@ import smtplib
 from email.mime.text import MIMEText
 import services.html_builder as hb
 
-def send_email(subject, body, recipient):
+def send_email(subject, body, recipient, logo=True):
     logo_path = os.path.join(os.path.dirname(__file__), '../templates/Raindeer Roundup.png')
 
     sender = os.environ['EMAIL_ID']
@@ -19,10 +19,11 @@ def send_email(subject, body, recipient):
 
     msg.attach(MIMEText(body, 'html'))
 
-    with open(logo_path, 'rb') as img_file:
-        logo = MIMEImage(img_file.read())
-        logo.add_header('Content-ID', '<reindeer-logo>')
-        msg.attach(logo)
+    if (logo):
+        with open(logo_path, 'rb') as img_file:
+            logo = MIMEImage(img_file.read())
+            logo.add_header('Content-ID', '<reindeer-logo>')
+            msg.attach(logo)
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
        smtp_server.login(sender, password)
@@ -72,4 +73,7 @@ def send_recievers(roundup):
         else:
             print('skip')
 
-
+def no_matches(roundup):
+    subject = f"No Matches Found For: {roundup['name']}"
+    body = "Theres a problem with your roundup. We couldn't find a matching set. Please log back in and adjust the participants and backlists."
+    send_email(subject, body, roundup['organizer'], logo=False)

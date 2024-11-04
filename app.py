@@ -183,13 +183,7 @@ def accept_invite():
     updated_rows, launchRoundup = rnd.update_participant_to_accepted(data['id'], data['uuid'])
 
     if launchRoundup:
-        roundup = rnd.get_roundup_by_id(data['id'])
-        try: 
-            matches = ss.get_matches(roundup)
-        except NoValidCombinationError:
-            res.bad_request('No valid matches found')
-    # add error handling
-        rnd.save_matches_to_roundup(data['id'], matches)
+        roundup_launch(data['id'])
 
     if (updated_rows > 0):
         roundup = rnd.get_roundup_by_id(data['id'])
@@ -204,13 +198,7 @@ def decline_invite():
     updated_rows, launchRoundup = rnd.update_participant_to_declined(data['id'], data['uuid'])
 
     if launchRoundup:
-        roundup = rnd.get_roundup_by_id(data['id'])
-        try: 
-            matches = ss.get_matches(roundup)
-        except NoValidCombinationError:
-            res.bad_request('No valid matches found')
-
-        rnd.save_matches_to_roundup(data['id'], matches)
+        roundup_launch(data['id'])
 
     if (updated_rows > 0):
         roundup = rnd.get_roundup_by_id(data['id'])
@@ -223,22 +211,31 @@ def decline_invite():
 def get_roundup_matches():
     data = request.get_json()
 
-    roundup = rnd.get_roundup_by_id(data['id'])
-
-    try: 
-        matches = ss.get_matches(roundup)
-    except NoValidCombinationError:
-        res.bad_request('No valid matches found')
-
-    update_rows = rnd.save_matches_to_roundup(data['id'], matches)
+    update_rows, matches = roundup_launch(data['id'])
 
     if update_rows > 0:
         roundup = rnd.get_roundup_by_id(data['id'])
         eml.send_recievers(roundup)
         return res.standard_response(matches)
+    elif update_rows == -1:
+        return res.bad_request('No valid matches found') 
     else:
+        return res.bad_request('Something went wrong with matches')
 
-        return res.bad_request('Unable to save matches to roundup')
+def roundup_launch(id):
+    roundup = rnd.get_roundup_by_id(id)
+
+    try: 
+        matches = ss.get_matches(roundup)
+    except NoValidCombinationError:
+        rnd.set_status_to_bad_matches(id)
+        eml.no_matches(roundup)
+        return -1
+    
+    updated_rows = rnd.save_matches_to_roundup(id, matches)
+
+    return updated_rows, matches
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=10000)
