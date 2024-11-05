@@ -233,6 +233,20 @@ def update_participant():
 def delete_participant():
     return res.standard_response()
 
+@app.post('/roundup/participant/reinvite')
+def resend_email():
+    data = request.get_json()
+    roundup_id = data['id']
+    email = data['email']
+
+    roundup = rnd.get_roundup_by_id(roundup_id)
+
+    if (roundup):
+        eml.send_invites(roundup, email)
+        return res.standard_response('Email Sent')
+    else:
+        return res.bad_request("Could not find roundup")
+
 @app.post('/roundup/blacklist/add')
 def add_blacklist():
     return res.standard_response()
