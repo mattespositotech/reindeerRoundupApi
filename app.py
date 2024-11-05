@@ -206,6 +206,45 @@ def decline_invite():
     else:
         return res.bad_request('Could not update participant')
 
+@app.post('/roundup/participant/add')
+def add_participant():
+    data = request.get_json()
+    roundup_id = data['id']
+    participant = data['participant']
+    tfm.prep_participant(participant)
+
+    print(participant)
+
+    updated_rows = rnd.add_participant_to_roundup(roundup_id, participant)
+
+    if (updated_rows > 0):
+        rnd.set_status_to_in_progress(roundup_id)
+        roundup = rnd.get_roundup_by_id(roundup_id)
+        eml.send_invites(roundup, participant['email'])
+        return res.standard_response('Added new participant')
+    else:
+        return res.bad_request('Could not add new participant')
+
+@app.post('/roundup/participant/update')
+def update_participant():
+    return res.standard_response()
+
+@app.delete('/roundup/participant/delete')
+def delete_participant():
+    return res.standard_response()
+
+@app.post('/roundup/blacklist/add')
+def add_blacklist():
+    return res.standard_response()
+
+@app.post('/roundup/blacklist/update')
+def update_blacklist():
+    return res.standard_response()
+
+@app.delete('/roundup/blacklist/delete')
+def delete_blacklist():
+    return res.standard_response()
+
 @app.post('/roundup/launch')
 @jwt_required()
 def get_roundup_matches():

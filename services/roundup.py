@@ -128,6 +128,21 @@ def set_all_participants_to_accepted(roundup_id):
 
     return updated_rows
 
+def set_status_to_in_progress(roundup_id):
+    query = {
+        "_id": ObjectId(roundup_id)
+    }
+    update = {
+        "$set": {
+            "status": RoundupStatus.InProgress.value
+        }
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_one(query, update)
+
+    return updated_rows
+
 def set_status_to_bad_matches(roundup_id):
     query = {
         "_id": ObjectId(roundup_id)
@@ -151,6 +166,22 @@ def save_matches_to_roundup(roundup_id, matches):
         "$set": {
             "matches": matches,
             "status": RoundupStatus.Complete.value
+        }
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_one(query, update)
+
+    return updated_rows
+
+def add_participant_to_roundup(roundup_id, participant):
+    query = {
+        "_id": ObjectId(roundup_id)
+    }
+
+    update = {
+        "$push": {
+            "participants": participant
         }
     }
 

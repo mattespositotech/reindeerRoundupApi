@@ -36,7 +36,7 @@ def reset_password(user):
 
     send_email(subject, body, user['email'])
 
-def send_invites(roundup):
+def send_invites(roundup, email=None):
     subject = "You've Been Invited To A Reindeer Roundup!"
     roundupEmailInfo = {
         'id': roundup['_id'],
@@ -46,11 +46,13 @@ def send_invites(roundup):
     }
 
     for part in roundup['participants']:
-        if '@test.com' not in part['email']:
-            body = hb.invitation_builder(roundupEmailInfo, part['uuid'])
-            send_email(subject, body, part['email'])
-        else:
-            print('skip')
+        if email is None or part['email'] == email:
+            if '@test.com' not in part['email']:
+                body = hb.invitation_builder(roundupEmailInfo, part['uuid'])
+                send_email(subject, body, part['email'])
+            else:
+                print('skip')
+
 
 def send_recievers(roundup):
     subject = "Discover Your Secret Santa"
