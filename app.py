@@ -207,6 +207,7 @@ def decline_invite():
         return res.bad_request('Could not update participant')
 
 @app.post('/roundup/participant/add')
+@jwt_required()
 def add_participant():
     data = request.get_json()
     roundup_id = data['id']
@@ -226,14 +227,37 @@ def add_participant():
         return res.bad_request('Could not add new participant')
 
 @app.post('/roundup/participant/update')
+@jwt_required()
 def update_participant():
-    return res.standard_response()
+    data = request.get_json()
+    roundup_id = data['id']
+    participant_id = data['part_id']
+    email = data['email']
+
+    update_rows = rnd.update_participants_email(roundup_id, participant_id, email)
+
+    if (update_rows > 0):
+        roundup = rnd.get_roundup_by_id(roundup_id)
+        eml.send_invites(roundup, email)
+        return res.standard_response('Email updated')
+    else:
+        return res.bad_request('Could not update email')
 
 @app.delete('/roundup/participant/delete')
+@jwt_required()
 def delete_participant():
-    return res.standard_response()
+    roundup_id = request.args.get('id')
+    participant_id = request.args.get('uuid')
+
+    updated_rows = rnd.delete_participant(roundup_id, participant_id)
+
+    if (updated_rows > 0):
+        return res.standard_response('Participant Removed')
+    else:
+        return res.bad_request('Could not remove participant')
 
 @app.post('/roundup/participant/reinvite')
+@jwt_required()
 def resend_email():
     data = request.get_json()
     roundup_id = data['id']
@@ -248,14 +272,17 @@ def resend_email():
         return res.bad_request("Could not find roundup")
 
 @app.post('/roundup/blacklist/add')
+@jwt_required()
 def add_blacklist():
     return res.standard_response()
 
 @app.post('/roundup/blacklist/update')
+@jwt_required()
 def update_blacklist():
     return res.standard_response()
 
 @app.delete('/roundup/blacklist/delete')
+@jwt_required()
 def delete_blacklist():
     return res.standard_response()
 

@@ -189,3 +189,38 @@ def add_participant_to_roundup(roundup_id, participant):
     updated_rows = dataAccess.update_one(query, update)
 
     return updated_rows
+
+def update_participants_email(roundup_id, participant_id, email):
+    query = {
+        "_id": ObjectId(roundup_id),
+        "participants.uuid": participant_id
+    }
+
+    update = {
+        "$set": {
+            "participants.$.email": email
+        }
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_one(query, update)
+
+    return updated_rows
+
+def delete_participant(roundup_id, participant_id):
+    query = {
+        "_id": ObjectId(roundup_id)
+    }
+
+    update = {
+        "$pull": {
+            "participants": {
+                "uuid": participant_id
+            }
+        }
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_one(query, update)
+
+    return updated_rows
