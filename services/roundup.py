@@ -224,3 +224,19 @@ def delete_participant(roundup_id, participant_id):
     updated_rows = dataAccess.update_one(query, update)
 
     return updated_rows
+
+def add_blacklist(roundup_id, blacklist):
+    query = {
+        "_id": ObjectId(roundup_id)
+    }
+
+    update = {
+        "$push": {
+            "blacklists": blacklist
+        }
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_one(query, update)
+
+    return updated_rows

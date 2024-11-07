@@ -274,7 +274,18 @@ def resend_email():
 @app.post('/roundup/blacklist/add')
 @jwt_required()
 def add_blacklist():
-    return res.standard_response()
+    data = request.get_json()
+    roundup_id = data['id']
+    blacklist = data['blacklist']
+
+    cleaned_blacklist = tfm.remove_duplicates(blacklist)
+
+    updated_rows = add_blacklist(roundup_id, cleaned_blacklist)
+
+    if (updated_rows > 0):
+        return res.standard_response('Blacklist added')
+    else:
+        return res.bad_request('Could not add blacklist')
 
 @app.post('/roundup/blacklist/update')
 @jwt_required()
@@ -294,8 +305,6 @@ def get_roundup_matches():
     update_rows, matches = roundup_launch(data['id'])
 
     if update_rows > 0:
-        roundup = rnd.get_roundup_by_id(data['id'])
-        eml.send_recievers(roundup)
         return res.standard_response(matches)
     elif update_rows == -1:
         return res.bad_request('No valid matches found') 
@@ -313,6 +322,10 @@ def roundup_launch(id):
         return -1, {}
     
     updated_rows = rnd.save_matches_to_roundup(id, matches)
+
+    if updated_rows > 0:
+        roundup = rnd.get_roundup_by_id(id)
+        eml.send_recievers(roundup)
 
     return updated_rows, matches
 
