@@ -27,6 +27,6 @@ def remove_duplicates(blacklist):
         tpl = tuple(lst)
         if tpl not in seen:
             seen.add(tpl)
-            unique_blacklist.append(lst)
+            unique_blacklist.append({blacklist: lst, uuid: str(uuid.uuid4)})
     
     return unique_blacklist
