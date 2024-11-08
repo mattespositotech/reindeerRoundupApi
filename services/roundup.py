@@ -87,6 +87,7 @@ def check_roundup_for_launch(roundup_id):
     pipeline = [
         { "$match" : {
             "_id" : ObjectId(roundup_id),
+            "status": 0,
             "participants.status": 0
             }
         },

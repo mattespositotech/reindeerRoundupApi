@@ -280,7 +280,7 @@ def add_blacklist():
 
     cleaned_blacklist = tfm.remove_duplicates(blacklist)
 
-    updated_rows = add_blacklist(roundup_id, cleaned_blacklist)
+    updated_rows = rnd.add_blacklist(roundup_id, cleaned_blacklist)
 
     if (updated_rows > 0):
         return res.standard_response('Blacklist added')
