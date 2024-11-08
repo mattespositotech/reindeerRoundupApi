@@ -290,12 +290,29 @@ def add_blacklist():
 @app.post('/roundup/blacklist/update')
 @jwt_required()
 def update_blacklist():
-    return res.standard_response()
+    data = request.get_json()
+    roundup_id = data['id']
+    blacklist = data['blacklist']
+
+    updated_rows = rnd.update_blacklist(roundup_id, blacklist)
+
+    if (updated_rows > 0):
+        return res.standard_response('Blacklist updated')
+    else:
+        return res.bad_request('Could not update blacklist')
 
 @app.delete('/roundup/blacklist/delete')
 @jwt_required()
 def delete_blacklist():
-    return res.standard_response()
+    roundup_id = request.args.get('id')
+    blacklist_id = request.args.get('uuid')
+
+    updated_rows = rnd.delete_blacklist(roundup_id, blacklist_id)
+
+    if (updated_rows > 0):
+        return res.standard_response('Blacklist deleted')
+    else:
+        return res.bad_request('Could not delete blacklist')
 
 @app.post('/roundup/launch')
 @jwt_required()
