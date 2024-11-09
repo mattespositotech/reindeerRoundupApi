@@ -1,4 +1,5 @@
 import os
+import datetime
 from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 import services.user as usr
@@ -14,6 +15,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 load_dotenv()
 app.config['JWT_SECRET_KEY'] = os.environ['JWT_KEY']
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=1)
 jwt = JWTManager(app)
 CORS(app, origins=["http://localhost:3000", "https://wonderful-tree-00f3c6710.5.azurestaticapps.net", "reindeer-roundup.com"])
 
@@ -41,9 +43,11 @@ def post_signup():
 
     if (new_user == -1):
         return res.bad_request("Email is already registered")
+    elif (new_user == None):
+        return res.bad_request('Could not add user')
     
     access_token = create_access_token(identity=email)
-    return res.standard_response({"email": new_user['email'], "access_token": access_token})
+    return res.standard_response({"email": email, "access_token": access_token})
 
 @app.post('/user/login')
 def post_login():
