@@ -241,3 +241,39 @@ def add_blacklist(roundup_id, blacklist):
     updated_rows = dataAccess.update_one(query, update)
 
     return updated_rows
+
+def delete_blacklist(roundup_id, blacklist_id):
+    query = {
+        "_id": ObjectId(roundup_id)
+    }
+
+    update = {
+        "$pull": {
+            "blacklists": {
+                "uuid": blacklist_id
+            }
+        }
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_one(query, update)
+
+    return updated_rows
+
+def update_blacklist(roundup_id, blacklist):
+    print(blacklist)
+    query = {
+        "_id": ObjectId(roundup_id),
+        "blacklists.uuid": blacklist['uuid']
+    }
+
+    update = {
+        "$set": {
+            "blacklists.$.blacklist": blacklist['blacklist']
+        }
+    }
+
+    dataAccess = MongoDataAccess('roundup')
+    updated_rows = dataAccess.update_one(query, update)
+
+    return updated_rows

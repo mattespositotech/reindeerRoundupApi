@@ -19,6 +19,7 @@ def prep_participant(participant):
     participant['status'] = UserStatus.Pending.value
     participant['uuid'] = str(uuid.uuid4())
 
+#rename to transform blacklists
 def remove_duplicates(blacklist):
     seen = set()
     unique_blacklist = []
@@ -29,4 +30,4 @@ def remove_duplicates(blacklist):
             seen.add(tpl)
             unique_blacklist.append(lst)
     
-    return unique_blacklist
+    return {'uuid': str(uuid.uuid4()), 'blacklist': unique_blacklist}
