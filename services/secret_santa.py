@@ -15,10 +15,9 @@ def get_list_of_ids_that_accepted(participants):
     return [par['name'] for par in participants if par['status'] == 1]
 
 def sanitize_blacklists_by_accepted(accepted_ids, blacklists):
-    sanitized_blacklists = [[id for id in blacklist if id in accepted_ids] for blacklist in blacklists]
+    sanitized_blacklists = [[id for id in blacklist['blacklist'] if id in accepted_ids] for blacklist in blacklists]
     return [blacklist for blacklist in sanitized_blacklists if blacklist]
 
-# change prints to logs
 def attempt_match(id_list, blacklists):
     for attempt in range(MATCH_MAX_ATTEMPTS):
         try:
