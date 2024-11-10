@@ -32,8 +32,6 @@ def reset_password_builder(user):
         'password': f"{url}/reset/{user['_id']}"
     }
 
-    print(user_data)
-
     update_links(soup, user_data)
 
     return soup

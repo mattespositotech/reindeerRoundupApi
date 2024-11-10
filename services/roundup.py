@@ -261,7 +261,6 @@ def delete_blacklist(roundup_id, blacklist_id):
     return updated_rows
 
 def update_blacklist(roundup_id, blacklist):
-    print(blacklist)
     query = {
         "_id": ObjectId(roundup_id),
         "blacklists.uuid": blacklist['uuid']

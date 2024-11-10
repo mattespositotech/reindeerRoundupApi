@@ -218,8 +218,6 @@ def add_participant():
     participant = data['participant']
     tfm.prep_participant(participant)
 
-    print(participant)
-
     updated_rows = rnd.add_participant_to_roundup(roundup_id, participant)
 
     if (updated_rows > 0):
@@ -282,7 +280,7 @@ def add_blacklist():
     roundup_id = data['id']
     blacklist = data['blacklist']
 
-    cleaned_blacklist = tfm.remove_duplicates(blacklist)
+    cleaned_blacklist = tfm.create_blacklist_object(blacklist)
 
     updated_rows = rnd.add_blacklist(roundup_id, cleaned_blacklist)
 
