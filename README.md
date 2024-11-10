@@ -4,17 +4,6 @@
 ## Introduction
 The **Reindeer Roundup** is a Flask-based web application that facilitates a Secret Santa gift exchange. Users can create and join gift exchanges, manage participation details, and receive email notifications. The application supports authentication, user management, and a gift exchange mechanism (Secret Santa), integrating MongoDB for data management and various service modules for functionality.
 
-## Table of Contents
-1. [Installation](#installation)
-2. [Usage](#usage)
-3. [Features](#features)
-4. [Configuration](#configuration)
-5. [Dependencies](#dependencies)
-6. [File Structure](#file-structure)
-7. [Templates](#templates)
-8. [Troubleshooting](#troubleshooting)
-9. [License](#license)
-
 ## Installation
 1. **Clone the repository**.
 2. **Install dependencies** with:
@@ -25,8 +14,15 @@ The **Reindeer Roundup** is a Flask-based web application that facilitates a Sec
    - Create a `.env` file in the project’s root directory.
    - Add the following variables:
      ```plaintext
-     JWT_KEY=your_jwt_secret_key
+     export MONGODB_URI = your_mongodb_uri
+     export EMAIL_ID = email_to_send_from
+     export EMAIL_PASSWORD = email_token
+     export JWT_KEY = your_jwt_secret_key
+     export FRONTEND_URL = 'http://localhost:3000' 
      ```
+4. **(Optional): Set up frontend**:
+
+   [Reindeer Roundup Frontend](https://github.com/mattespositotech/reindeerRoundupFrontend)
 
 ## Usage
 Run the app using:
@@ -70,6 +66,3 @@ Key dependencies include:
 ## Troubleshooting
 - **CORS Issues**: Ensure allowed origins are correctly set in `app.py`.
 - **JWT Authentication**: Confirm the `JWT_KEY` environment variable is correctly configured.
-
-## License
-This project is licensed under [MIT License](LICENSE).

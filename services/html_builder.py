@@ -26,7 +26,7 @@ def update_links(soup, links):
 def reset_password_builder(user):
     soup = load_template('reset_password_template.html')
 
-    url = os.environ['ENV_URL']
+    url = os.environ['FRONTEND_URL']
 
     user_data = {
         'password': f"{url}/reset/{user['_id']}"
@@ -48,7 +48,7 @@ def invitation_builder(roundup, uuid):
     }
     update_template(soup, roundup_data)
 
-    url = os.environ['ENV_URL']
+    url = os.environ['FRONTEND_URL']
 
     participant_buttons = {
         'accept': f"{url}/roundup/accept/{roundup['id']}/{uuid}",
