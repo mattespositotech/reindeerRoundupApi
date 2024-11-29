@@ -84,20 +84,16 @@ def update_participants_status(roundup_id, uuid, status):
     return updated_rows, launchRoundup
 
 def check_roundup_for_launch(roundup_id):
-    pipeline = [
-        { "$match" : {
-            "_id" : ObjectId(roundup_id),
-            "status": 0,
-            "participants.status": 0
-            }
-        },
-        {"$limit": 1}
-    ]
+    roundup = get_roundup_by_id(roundup_id)
 
-    dataAccess = MongoDataAccess('roundup')
-    par_pending = dataAccess.aggregate_as_list(pipeline)
-
-    return not par_pending
+    if roundup['status'] != 0:
+        return False
+    
+    for participant in roundup['participants']:
+        if participant['status'] == 0:
+            return False
+        
+    return True
 
 def get_all_ready_particitpants(roundup_id):
     pipeline = [
